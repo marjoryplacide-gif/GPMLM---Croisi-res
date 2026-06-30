@@ -39,11 +39,6 @@ titre_personnalise = st.text_input(
 
 st.divider()
 
-# ---------------------------------------------------------------------------
-# Étape 2 : génération et téléchargement
-# ---------------------------------------------------------------------------
-st.subheader("2. Générer le fichier")
-
 if fichier is None:
     st.info("Déposez un fichier CSV ci-dessus pour activer la génération.")
 else:
