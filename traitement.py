@@ -61,7 +61,8 @@ def lire_extraction_vigie(fichier) -> pd.DataFrame:
     df.columns = [c.strip() for c in df.columns]
 
     colonnes_attendues = {"N°", "Sens", "Navire", "Armateur", "Agent",
-                           "Arrivée Rade", "Poste", "Dép quai", "Validé Agent"}
+                           "Arrivée Rade", "Poste", "Dép quai", "Validé Agent",
+                           "Tête de ligne"}
     manquantes = colonnes_attendues - set(df.columns)
     if manquantes:
         raise FichierVigieInvalide(
@@ -106,6 +107,7 @@ def construire_escales(df: pd.DataFrame) -> pd.DataFrame:
         "Navire": arrivees["Navire"],
         "Armateur": arrivees["Armateur"],
         "Agent": arrivees["Agent"],
+        "Tête de ligne": "OUI" if esc["TeteDeLigne"] else "NON",
         "Loa": arrivees["L"],
         "Lar": arrivees["l"],
         "Te": arrivees["TE"],
@@ -119,6 +121,7 @@ def construire_escales(df: pd.DataFrame) -> pd.DataFrame:
             departs["Dép quai"], format="%d/%m/%Y %H:%M", errors="coerce"
         ),
         "ValideAgent": arrivees["Validé Agent"],
+        "TeteDeLigne": arrivees["Tête de ligne"],
     })
 
     return escales
@@ -229,7 +232,7 @@ def ecrire_excel(tableau: pd.DataFrame, titre: str, date_maj: dt.date) -> bytes:
     ws["A2"].font = font_souscription
 
     entetes = ["Date", "Jour", "Poste", "Navire", "Compagnie", "ETA", "ETD",
-               "Agent", "Loa (m)", "Lar (m)", "Te (m)", "Pax", "Crew"]
+               "Agent", "Tête de ligne", "Loa (m)", "Lar (m)", "Te (m)", "Pax", "Crew"]
     ligne_entete = 4
     for col_idx, libelle in enumerate(entetes, start=1):
         c = ws.cell(row=ligne_entete, column=col_idx, value=libelle)
@@ -242,7 +245,7 @@ def ecrire_excel(tableau: pd.DataFrame, titre: str, date_maj: dt.date) -> bytes:
         etd_val = formater_heure(row.ETD) if not isinstance(row.ETD, str) else row.ETD
         valeurs = [
             row.Date, row.Jour, row.Poste, row.Navire, row.Compagnie,
-            eta_val, etd_val, row.Agent, row.Loa, row.Lar, row.Te, row.Pax, row.Crew,
+            eta_val, etd_val, row.Agent, getattr(row, "Tête de ligne"), row.Loa, row.Lar, row.Te, row.Pax, row.Crew,
         ]
         for col_idx, val in enumerate(valeurs, start=1):
             c = ws.cell(row=i, column=col_idx, value=val)
@@ -261,7 +264,7 @@ def ecrire_excel(tableau: pd.DataFrame, titre: str, date_maj: dt.date) -> bytes:
     )
     ws.add_table(table)
 
-    largeurs = [12, 11, 9, 25, 25, 8, 8, 10, 9, 9, 8, 8, 8]
+    largeurs = [12, 11, 9, 25, 25, 8, 8, 10, 9, 9, 9, 8, 8, 8]
     for col_idx, largeur in enumerate(largeurs, start=1):
         ws.column_dimensions[get_column_letter(col_idx)].width = largeur
 
