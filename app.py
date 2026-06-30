@@ -36,7 +36,21 @@ titre_personnalise = st.text_input(
     "Titre du document (laisser vide pour un titre automatique)",
     value="",
 )
-
+with st.expander("Ajuster manuellement les dates de saison (optionnel)"):
+    st.caption(
+        "Par défaut, la saison est détectée automatiquement (du 1er octobre "
+        "au 30 septembre suivant) à partir des dates du fichier déposé. "
+        "Utilisez ces champs uniquement si la saison réelle est différente."
+    )
+    utiliser_dates_manuelles = st.checkbox("Définir des dates manuellement")
+    date_debut_manuelle = None
+    date_fin_manuelle = None
+    if utiliser_dates_manuelles:
+        col1, col2 = st.columns(2)
+        with col1:
+            date_debut_manuelle = st.date_input("Début de saison", format="DD/MM/YYYY")
+        with col2:
+            date_fin_manuelle = st.date_input("Fin de saison", format="DD/MM/YYYY")
 st.divider()
 
 if fichier is None:
