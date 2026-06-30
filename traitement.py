@@ -191,7 +191,7 @@ def construire_tableau(escales: pd.DataFrame, date_debut: dt.date, date_fin: dt.
             "ETA": esc["ArriveeRade"],
             "ETD": esc["DepQuai"],
             "Agent": esc["Agent"],
-            "Tête de ligne": "OUI" if esc["TeteDeLigne"] else "NON",
+            "Teteligne": "OUI" if esc["TeteDeLigne"] else "NON",
             "Loa": esc["Loa"],
             "Lar": esc["Lar"],
             "Te": esc["Te"],
@@ -245,7 +245,7 @@ def ecrire_excel(tableau: pd.DataFrame, titre: str, date_maj: dt.date) -> bytes:
         etd_val = formater_heure(row.ETD) if not isinstance(row.ETD, str) else row.ETD
         valeurs = [
             row.Date, row.Jour, row.Poste, row.Navire, row.Compagnie,
-            eta_val, etd_val, row.Agent, getattr(row, "Tête de ligne"), row.Loa, row.Lar, row.Te, row.Pax, row.Crew,
+            eta_val, etd_val, row.Agent, row.TeteLigne, row.Loa,
         ]
         for col_idx, val in enumerate(valeurs, start=1):
             c = ws.cell(row=i, column=col_idx, value=val)
