@@ -121,7 +121,6 @@ def construire_escales(df: pd.DataFrame) -> pd.DataFrame:
             departs["Dép quai"], format="%d/%m/%Y %H:%M", errors="coerce"
         ),
         "ValideAgent": arrivees["Validé Agent"],
-        "TeteDeLigne": arrivees["Tête de ligne"],
     })
 
     return escales
