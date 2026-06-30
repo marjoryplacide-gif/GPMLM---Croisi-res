@@ -34,8 +34,7 @@ POSTE_VIGIE_VERS_CODE = {
 # réelles sont affichées, donc ce point n'a plus d'impact direct — mais il
 # reste pertinent si un jour ces postes doivent être intégrés.
 
-MOIS_FR = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet",
-           "août", "septembre", "octobre", "novembre", "décembre"]
+JOURS_FR = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
 
 
 class FichierVigieInvalide(Exception):
@@ -180,10 +179,10 @@ def construire_tableau(escales: pd.DataFrame, date_debut: dt.date, date_fin: dt.
 
     lignes = []
     for _, esc in escales.iterrows():
-        mois_idx = esc["ArriveeRade"].month - 1
+        jour_idx = esc["ArriveeRade"].weekday()
         lignes.append({
             "Date": esc["JourArrivee"],
-            "Mois": MOIS_FR[mois_idx].capitalize(),
+            "Jour": JOURS_FR[jour_idx].capitalize(),
             "Poste": esc["PosteCode"],
             "Navire": esc["Navire"],
             "Compagnie": esc["Armateur"],
@@ -229,7 +228,7 @@ def ecrire_excel(tableau: pd.DataFrame, titre: str, date_maj: dt.date) -> bytes:
     ws["A2"] = f"À jour au {date_maj.strftime('%d/%m/%Y')} — {len(tableau)} escales"
     ws["A2"].font = font_souscription
 
-    entetes = ["Date", "Mois", "Poste", "Navire", "Compagnie", "ETA", "ETD",
+    entetes = ["Date", "Jour", "Poste", "Navire", "Compagnie", "ETA", "ETD",
                "Agent", "Loa (m)", "Lar (m)", "Te (m)", "Pax", "Crew"]
     ligne_entete = 4
     for col_idx, libelle in enumerate(entetes, start=1):
@@ -242,7 +241,7 @@ def ecrire_excel(tableau: pd.DataFrame, titre: str, date_maj: dt.date) -> bytes:
         eta_val = formater_heure(row.ETA) if not isinstance(row.ETA, str) else row.ETA
         etd_val = formater_heure(row.ETD) if not isinstance(row.ETD, str) else row.ETD
         valeurs = [
-            row.Date, row.Mois, row.Poste, row.Navire, row.Compagnie,
+            row.Date, row.Jour, row.Poste, row.Navire, row.Compagnie,
             eta_val, etd_val, row.Agent, row.Loa, row.Lar, row.Te, row.Pax, row.Crew,
         ]
         for col_idx, val in enumerate(valeurs, start=1):
