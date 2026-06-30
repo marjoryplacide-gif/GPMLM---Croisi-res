@@ -61,7 +61,8 @@ else:
             with st.spinner("Génération du fichier en cours..."):
                 titre = titre_personnalise.strip() or None
                 contenu_xlsx, nb_escales, postes_inconnus, date_debut, date_fin = transformer(
-                    fichier, titre
+                    fichier, titre,
+                    date_debut=date_debut_manuelle, date_fin=date_fin_manuelle,
                 )
 
             st.success(
