@@ -276,10 +276,13 @@ def ecrire_excel(tableau: pd.DataFrame, titre: str, date_maj: dt.date) -> bytes:
 # ---------------------------------------------------------------------------
 # Fonction "tout-en-un" utilisée par l'appli Streamlit
 # ---------------------------------------------------------------------------
-def transformer(fichier_csv, titre: str | None = None):
+def transformer(fichier_csv, titre: str | None = None,
+                 date_debut: dt.date | None = None, date_fin: dt.date | None = None):
     """
     Prend le fichier csv déposé (chemin ou objet en mémoire), détecte
-    automatiquement la saison à partir des données, et retourne
+    automatiquement la saison à partir des données (sauf si date_debut/
+    date_fin sont fournies, pour les cas où la saison ne suit pas le
+    schéma standard 1er octobre -> 30 septembre), et retourne
     (bytes_du_xlsx, nombre_escales, postes_non_reconnus, date_debut, date_fin).
     Lève FichierVigieInvalide si le fichier n'a pas le format attendu.
     """
@@ -288,7 +291,11 @@ def transformer(fichier_csv, titre: str | None = None):
     escales = filtrer_escales_validees(escales)
     escales, postes_inconnus = recoder_postes(escales)
 
-    date_debut, date_fin = detecter_periode_saison(escales)
+    date_debut_auto, date_fin_auto = detecter_periode_saison(escales)
+    if date_debut is None:
+        date_debut = date_debut_auto
+    if date_fin is None:
+        date_fin = date_fin_auto
 
     if titre is None:
         titre = f"SAISON CROISIERES {date_debut.year}-{date_fin.year} - ESCALES GPMLM"
