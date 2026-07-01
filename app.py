@@ -232,7 +232,7 @@ def detecter_periode(escales):
     Détecte automatiquement les dates de début et fin de saison à partir
     des dates d'arrivée présentes dans le fichier.
 
-    Une saison croisières va toujours du 1er octobre au 30 septembre suivant.
+    Une saison croisière va toujours du 1er octobre au 30 septembre suivant.
     On regarde la date la plus ancienne du fichier pour savoir
     à quelle saison elle appartient.
 
@@ -456,7 +456,7 @@ def generer_planning(fichier, titre=None, date_debut=None, date_fin=None):
 
     # Titre automatique si non précisé
     if titre is None:
-        titre = f"SAISON CROISIERES {date_debut.year}-{date_fin.year} - ESCALES GPMLM"
+        titre = f"SAISON CROISIERE {date_debut.year}-{date_fin.year} - ESCALES GPMLM"
 
     tableau       = construire_tableau(escales, date_debut, date_fin)
     contenu_excel = generer_excel(tableau, titre, date_maj=dt.date.today())
