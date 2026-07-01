@@ -343,7 +343,13 @@ def generer_excel(tableau, titre, date_maj):
     ws["A1"] = titre
     ws["A1"].font = style_titre
 
-    ws["A2"] = f"À jour au {date_maj.strftime('%d/%m/%Y')} — {len(tableau)} escales"
+    date_premiere = tableau["Date"].min()
+    date_derniere = tableau["Date"].max()
+
+    ws["A2"] = (
+        f"Du {date_premiere.strftime('%d/%m/%Y')} au {date_derniere.strftime('%d/%m/%Y')}"
+        f" — Généré le {date_maj.strftime('%d/%m/%Y')} — {len(tableau)} escales"
+    )
     ws["A2"].font = style_sous_titre
 
     # --- En-têtes des colonnes ---
