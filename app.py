@@ -173,6 +173,7 @@ def construire_escales(df):
         "Crew":        arrivees["Crew"],            # Nombre de membres d'équipage
         "Poste":       arrivees["Poste"],           # Nom du quai (sera recodé ensuite)
         "ValideAgent": arrivees["Validé Agent"],    # Oui / Non / Inconnu
+        "Obs":          arrivees["Obs"],            # Observations 
         # pd.to_datetime convertit le texte "12/10/2026 09:00" en vraie date Python
         "ArriveeRade": pd.to_datetime(
             arrivees["Arrivée Rade"], format="%d/%m/%Y %H:%M", errors="coerce"
@@ -301,6 +302,7 @@ def construire_tableau(escales, date_debut, date_fin):
             "Te":            esc["Te"],
             "Pax":           esc["Pax"],
             "Crew":          esc["Crew"],
+            "Obs":           esc["Obs"],
         })
 
     return pd.DataFrame(lignes)
@@ -357,7 +359,7 @@ def generer_excel(tableau, titre, date_maj):
     entetes = [
         "Date", "Poste", "Navire", "Compagnie",
         "ETA", "ETD", "Agent", "Tête de ligne",
-        "Loa (m)", "Lar (m)", "Te (m)", "Pax", "Crew"
+        "Loa (m)", "Lar (m)", "Te (m)", "Pax", "Crew", "Observations"
     ]
     ligne_entete = 4  # les en-têtes sont sur la ligne 4 (lignes 1-3 = titre + vide)
 
@@ -375,7 +377,7 @@ def generer_excel(tableau, titre, date_maj):
         valeurs = [
             row.Date, row.Poste, row.Navire, row.Compagnie,
             eta_val, etd_val, row.Agent, row.Tete_ligne,
-            row.Loa, row.Lar, row.Te, row.Pax, row.Crew,
+            row.Loa, row.Lar, row.Te, row.Pax, row.Crew, row.Obs,
         ]
         for col_idx, val in enumerate(valeurs, start=1):
             c = ws.cell(row=i, column=col_idx, value=val)
@@ -400,7 +402,7 @@ def generer_excel(tableau, titre, date_maj):
     ws.add_table(table)
 
     # --- Largeurs des colonnes ---
-    largeurs = [26, 9, 25, 25, 8, 8, 10, 12, 9, 9, 8, 8, 8]
+    largeurs = [26, 9, 25, 25, 8, 8, 10, 12, 9, 9, 8, 8, 8, 30]
     for col_idx, largeur in enumerate(largeurs, start=1):
         ws.column_dimensions[get_column_letter(col_idx)].width = largeur
 
