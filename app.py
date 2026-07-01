@@ -155,8 +155,7 @@ def construire_escales(df):
     if not (sens_ok and navire_ok):
         raise ErreurFichier(
             "Le contenu du fichier ne correspond pas à ce qui était attendu. "
-            "Réessayez avec une nouvelle extraction depuis VIGIEsip, "
-            "ou contactez Marjo si le problème persiste."
+            "Réessayez avec une nouvelle extraction depuis VIGIEsip.
         )
 
     # Construction du tableau final : une ligne par escale
@@ -348,8 +347,15 @@ def generer_excel(tableau, titre, date_maj):
     date_premiere = tableau["Date"].min()
     date_derniere = tableau["Date"].max()
 
+    JOURS_FR  = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+    MOIS_FR   = ["janvier", "février", "mars", "avril", "mai", "juin",
+                 "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+
+    def formater_date_fr(d):
+        return f"{JOURS_FR[d.weekday()]} {d.day} {MOIS_FR[d.month - 1]} {d.year}"
+
     ws["A2"] = (
-        f"Du {date_premiere.strftime('%d/%m/%Y')} au {date_derniere.strftime('%d/%m/%Y')}"
+        f"Du {formater_date_fr(date_premiere)} au {formater_date_fr(date_derniere)}"
         f" — Généré le {date_maj.strftime('%d/%m/%Y')} — {len(tableau)} escales"
     )
     ws["A2"].font = style_sous_titre
@@ -473,6 +479,11 @@ st.caption(
 
 st.divider()
 
+# Réinitialisation de la page après téléchargement
+if st.session_state.get("telecharge"):
+    st.session_state["telecharge"] = False
+    st.rerun()
+
 # --- Zone de dépôt du fichier ---
 st.subheader("1. Déposez votre extraction VIGIEsip")
 
@@ -543,7 +554,7 @@ else:
                 file_name=nom_fichier,
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True,
-                on_click=st.rerun,
+                on_click=lambda: st.session_state.update({"telecharge": True}),
             )
         # Erreur liée au fichier déposé (mauvais format, fichier abîmé...)
         except ErreurFichier as e:
