@@ -164,12 +164,12 @@ def construire_escales(df):
         "Navire":      arrivees["Navire"],
         "Armateur":    arrivees["Armateur"],
         "Agent":       arrivees["Agent"],
-        "TeteLigne":   arrivees["Tête de ligne"],   # True/False dans le CSV
         "Loa":         arrivees["L"],               # Longueur du navire
         "Lar":         arrivees["l"],               # Largeur du navire
         "Te":          arrivees["TE"],              # Tirant d'eau
         "Pax":         arrivees["Pax"],             # Nombre de passagers
         "Crew":        arrivees["Crew"],            # Nombre de membres d'équipage
+         "TeteLigne":   arrivees["Tête de ligne"],   # True/False dans le CSV
         "Poste":       arrivees["Poste"],           # Nom du quai (sera recodé ensuite)
         "ValideAgent": arrivees["Validé Agent"],    # Oui / Non / Inconnu
         "Obs":          arrivees["Obs"],            # Observations 
@@ -295,12 +295,12 @@ def construire_tableau(escales, date_debut, date_fin):
             "ETA":           esc["ArriveeRade"],
             "ETD":           esc["DepQuai"],
             "Agent":         esc["Agent"],
-            "Tete_ligne":    tete_ligne,       # nom sans accent ni espace pour pandas
             "Loa":           esc["Loa"],
             "Lar":           esc["Lar"],
             "Te":            esc["Te"],
             "Pax":           esc["Pax"],
             "Crew":          esc["Crew"],
+            "Tete_ligne":    tete_ligne,       # nom sans accent ni espace pour pandas
             "Obs":           esc["Obs"],
         })
 
@@ -364,8 +364,8 @@ def generer_excel(tableau, titre, date_maj):
     # Ce sont les libellés visibles dans Excel (peuvent contenir espaces/accents)
     entetes = [
         "Date", "Poste", "Navire", "Compagnie",
-        "ETA", "ETD", "Agent", "Tête de ligne",
-        "Loa (m)", "Lar (m)", "Te (m)", "Pax", "Crew", "Observations"
+        "ETA", "ETD", "Agent", "Loa (m)", "Lar (m)",
+        "Te (m)", "Pax", "Crew", "Tête de ligne","Observations"
     ]
     ligne_entete = 4  # les en-têtes sont sur la ligne 4 (lignes 1-3 = titre + vide)
 
