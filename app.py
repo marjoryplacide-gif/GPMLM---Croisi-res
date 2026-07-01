@@ -155,7 +155,7 @@ def construire_escales(df):
     if not (sens_ok and navire_ok):
         raise ErreurFichier(
             "Le contenu du fichier ne correspond pas à ce qui était attendu. "
-            "Réessayez avec une nouvelle extraction depuis VIGIEsip.
+            "Réessayez avec une nouvelle extraction depuis VIGIEsip."
         )
 
     # Construction du tableau final : une ligne par escale
