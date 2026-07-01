@@ -58,10 +58,6 @@ POSTE_VIGIE_VERS_CODE = {
 # mais ces postes n'apparaissent pas dans l'extraction VIGIEsip.
 # Leur source est à confirmer avec Yvon/Lauriane.
 
-# Noms des jours de la semaine en français.
-# Python numérote les jours de 0 (lundi) à 6 (dimanche),
-# donc on utilise cette liste pour convertir le chiffre en texte lisible.
-JOURS_FR = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 
 
 # Erreur personnalisée pour les problèmes liés au fichier déposé.
@@ -286,15 +282,13 @@ def construire_tableau(escales, date_debut, date_fin):
     lignes = []
     for _, esc in escales.iterrows():
 
-        # .weekday() renvoie 0 pour lundi, 1 pour mardi... 6 pour dimanche
-        jour = JOURS_FR[esc["ArriveeRade"].weekday()]
+        
 
         # Conversion de True/False (CSV) en OUI/NON (lisible)
         tete_ligne = "OUI" if esc["TeteLigne"] else "NON"
 
         lignes.append({
             "Date":          esc["JourArrivee"],
-            "Jour":          jour,
             "Poste":         esc["PosteCode"],
             "Navire":        esc["Navire"],
             "Compagnie":     esc["Armateur"],
@@ -355,7 +349,7 @@ def generer_excel(tableau, titre, date_maj):
     # --- En-têtes des colonnes ---
     # Ce sont les libellés visibles dans Excel (peuvent contenir espaces/accents)
     entetes = [
-        "Date", "Jour", "Poste", "Navire", "Compagnie",
+        "Date", "Poste", "Navire", "Compagnie",
         "ETA", "ETD", "Agent", "Tête de ligne",
         "Loa (m)", "Lar (m)", "Te (m)", "Pax", "Crew"
     ]
@@ -373,7 +367,7 @@ def generer_excel(tableau, titre, date_maj):
         etd_val = formater_heure(row.ETD) if not isinstance(row.ETD, str) else row.ETD
 
         valeurs = [
-            row.Date, row.Jour, row.Poste, row.Navire, row.Compagnie,
+            row.Date, row.Poste, row.Navire, row.Compagnie,
             eta_val, etd_val, row.Agent, row.Tete_ligne,
             row.Loa, row.Lar, row.Te, row.Pax, row.Crew,
         ]
@@ -382,7 +376,7 @@ def generer_excel(tableau, titre, date_maj):
             c.font = style_normal
             # Colonne Date : format jj/mm/aaaa
             if col_idx == 1 and val is not None:
-                c.number_format = "dd/mm/yyyy"
+                c.number_format = '[$-fr-FR]dddd d mmmm yyyy'
 
     # --- Tableau structuré Excel (les petites flèches de filtre/tri) ---
     derniere_ligne = ligne_entete + len(tableau)
@@ -400,7 +394,7 @@ def generer_excel(tableau, titre, date_maj):
     ws.add_table(table)
 
     # --- Largeurs des colonnes ---
-    largeurs = [12, 11, 9, 25, 25, 8, 8, 10, 12, 9, 9, 8, 8, 8]
+    largeurs = [26, 9, 25, 25, 8, 8, 10, 12, 9, 9, 8, 8, 8]
     for col_idx, largeur in enumerate(largeurs, start=1):
         ws.column_dimensions[get_column_letter(col_idx)].width = largeur
 
