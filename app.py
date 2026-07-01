@@ -4,7 +4,7 @@
 # Ce fichier contient TOUT le code de l'application : la logique de
 # traitement des données ET l'interface utilisateur.
 #
-# Pour lancer l'application en local (sur ton Mac) :
+# Pour lancer l'application en local :
 #     streamlit run app.py
 #
 # Pour mettre à jour l'application en ligne : modifier ce fichier puis le
@@ -543,8 +543,8 @@ else:
                 file_name=nom_fichier,
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True,
+                on_click=st.rerun,
             )
-
         # Erreur liée au fichier déposé (mauvais format, fichier abîmé...)
         except ErreurFichier as e:
             st.error(str(e))
